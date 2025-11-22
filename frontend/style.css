@@ -198,18 +198,23 @@ textarea:focus {
 /* FIXED FOOTER */
 .footer {
   position: fixed;
-  left: 0;
   bottom: 0;
   width: 100%;
-  padding: 14px;
-  background: rgb(49, 34, 56);
+  padding: 14px 0;
+  background: #ffffff;
   text-align: center;
-  border-top: 1px solid #E5D4FF;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+  font-size: 14px;
+  color: #5A1DC7;
+  border-top: 1px solid #E8E0FF;
 }
 
 .footer a {
-  color: var(--primary);
-  font-weight: 600;
+  color: #6C2BD9;
   text-decoration: none;
+  font-weight: 600;
 }
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
