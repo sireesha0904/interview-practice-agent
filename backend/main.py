@@ -9,26 +9,21 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from groq import Groq
 
-# Load environment variables
+
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# -------------------------------------------------------------
-# ⭐ CREATE APP FIRST
-# -------------------------------------------------------------
+
 app = FastAPI(title="Interview Practice Partner - Free Groq API")
 
-# -------------------------------------------------------------
-# ⭐ ABSOLUTE CORS FIX (Windows + Live Server)
-# -------------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],              # allow all origins
-    allow_methods=["*"],              # allow all HTTP methods
-    allow_headers=["*"],              # allow all headers
+    allow_origins=["*"],              
+    allow_methods=["*"],             
+    allow_headers=["*"],           
 )
 
-# ⭐ Force CORS headers manually for browsers that ignore middleware
+
 @app.middleware("http")
 async def add_cors_headers(request: Request, call_next):
     response: Response = await call_next(request)
@@ -37,9 +32,6 @@ async def add_cors_headers(request: Request, call_next):
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
 
-# -------------------------------------------------------------
-# MODELS
-# -------------------------------------------------------------
 class StartRequest(BaseModel):
     role: str
     level: str
@@ -70,14 +62,8 @@ class FeedbackResponse(BaseModel):
     botMessage: str
     summary: FeedbackSummary
 
-# -------------------------------------------------------------
-# MEMORY STORE
-# -------------------------------------------------------------
 SESSIONS: Dict[str, Dict] = {}
 
-# -------------------------------------------------------------
-# LLM LOGIC
-# -------------------------------------------------------------
 def call_llm(system_prompt, user_prompt):
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
@@ -104,9 +90,6 @@ Tips:
 Rating: x.x
 """
 
-# -------------------------------------------------------------
-# HELPERS
-# -------------------------------------------------------------
 def build_interviewer_prompt(session, latest_answer):
     text = f"Role: {session['role']}\nExperience: {session['level']}\nMode: {session['mode']}\n"
     text += "Conversation:\n"
@@ -122,9 +105,6 @@ def format_transcript(session):
         text += f"Q: {qa['question']}\nA: {qa['answer']}\n\n"
     return text
 
-# -------------------------------------------------------------
-# ENDPOINTS
-# -------------------------------------------------------------
 @app.get("/health")
 def health():
     return {"status": "ok"}
@@ -232,7 +212,6 @@ Transcript:
             elif section == "t":
                 tips.append(point)
 
-    # Ensure minimum 1 item per category
     if not strengths:
         strengths = ["Good communication", "Positive attitude"]
     if not areas:
